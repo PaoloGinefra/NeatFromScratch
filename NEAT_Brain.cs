@@ -32,10 +32,15 @@ public class NEAT_Brain
     {
         int nodeID = 0;
         // Create input nodes
-        for (int i = 0; i < inputSize; i++)
+        for (int i = 0; i < inputSize - 1; i++)
         {
             nodes.Add(new Node(i, 0, 0));
         }
+
+        //add bias node
+        nodes.Add(new Node(inputSize, 3, 0));
+        nodes[inputSize].sumInput = 1; //bias node always outputs 1
+
         nodeID += inputSize;
 
         // Create hidden nodes
