@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Connection
 {
+    static int innovationIDCounter = 0;
+    static List<int> innovationIDs = new List<int>();
     public int innovationID;
     public int fromNode;
     public int toNode;
@@ -13,7 +15,7 @@ public class Connection
 
     public Connection(int fromNode, int toNode, float weight, bool enabled, bool isRecurrent)
     {
-        this.innovationID = CantorMap(fromNode, toNode);
+        this.innovationID = getInnovationID(fromNode, toNode);
         this.fromNode = fromNode;
         this.toNode = toNode;
         this.weight = weight;
@@ -24,5 +26,30 @@ public class Connection
     int CantorMap(int x, int y)
     {
         return (x + y) * (x + y + 1) / 2 + y;
+    }
+
+    int getInnovationID(int fromNode, int toNode)
+    {
+        int index = CantorMap(fromNode, toNode);
+
+        if (innovationIDs.Count > index)
+        {
+            if (innovationIDs[index] == -1)
+            {
+                innovationIDs[index] = innovationIDCounter;
+                innovationIDCounter++;
+            }
+        }
+        else
+        {
+            while (innovationIDs.Count < index)
+            {
+                innovationIDs.Add(-1);
+            }
+            innovationIDs.Add(innovationIDCounter);
+            innovationIDCounter++;
+        }
+
+        return innovationIDs[index];
     }
 }
