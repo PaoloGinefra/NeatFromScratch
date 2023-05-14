@@ -11,10 +11,10 @@ public class NEAT_Population
     public int inputSize, outputSize, hiddenSize;
     public float connectionPercentage;
 
-    List<Species> species = new List<Species>();
+    public List<Species> species = new List<Species>();
 
     public float targetSpeciesNumber = 10;
-    public float speciationThreshold = 3f;
+    public float speciationThreshold = 0.5f;
     public float thresholdModifier = 0.1f;
 
     public NEAT_Population(int populationSize, int inputSize, int outputSize, int hiddenSize, float connectionPercentage)
@@ -39,12 +39,6 @@ public class NEAT_Population
 
     public void Speciate()
     {
-        // Move all previous species to population list
-        foreach (Species species in species)
-        {
-            population.AddRange(species.population);
-        }
-
         species.Clear();
 
         // Speciate
@@ -53,6 +47,7 @@ public class NEAT_Population
         {
             NEAT_Brain currentBrain = population[Random.Range(0, population.Count)];
             species.Add(new Species(speciesID));
+            species[speciesID].AddToSpecies(currentBrain);
             population.Remove(currentBrain);
 
             for (int i = population.Count - 1; i >= 0; i--)
@@ -95,15 +90,27 @@ public class NEAT_Population
         {
             species.N_offpsring = Mathf.FloorToInt(species.adjustedFitness / averageAdjustedFitness * populationSize);
         }
+
+        // Move all previous species to population list
+        foreach (Species species in species)
+        {
+            population.AddRange(species.population);
+        }
     }
 
     float ComparisonCheck(NEAT_Brain brain1, NEAT_Brain brain2)
     {
         // Comparison Check = Execess Genes + Disjoint Genes + Weight Difference
 
+        if (brain1.connections.Count == 0 && brain2.connections.Count == 0)
+        {
+            return 100;
+        }
+
         // Excess Genes + Disjoint Genes
-        int maxInvvoationID1 = brain1.connections.Max(x => x.innovationID);
-        int maxInvvoationID2 = brain2.connections.Max(x => x.innovationID);
+        int maxInvvoationID1 = brain1.connections.Count != 0 ? brain1.connections.Max(x => x.innovationID) : 0;
+        int maxInvvoationID2 = brain2.connections.Count != 0 ? brain2.connections.Max(x => x.innovationID) : 0;
+
         int[] InnovationIDs = new int[Mathf.Max(maxInvvoationID1, maxInvvoationID2) + 1];
 
         foreach (Connection connection in brain1.connections)

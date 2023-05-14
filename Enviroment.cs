@@ -15,8 +15,10 @@ public class Enviroment : MonoBehaviour
     {
         networkDrawer = FindObjectOfType<NetworkDrawer>();
 
-        population = new NEAT_Population(100, 3, 1, 1, 100);
+        population = new NEAT_Population(100, 3, 1, 1, 0.5f);
         RunGeneration();
+
+        Debug.Log(population.species.Count);
     }
 
     int index = 0;
@@ -50,7 +52,7 @@ public class Enviroment : MonoBehaviour
         {
             EvaluateFitness(brain);
         }
-        //population.Speciate();
+        population.Speciate();
     }
 
     public void EvaluateFitness(NEAT_Brain brain)
