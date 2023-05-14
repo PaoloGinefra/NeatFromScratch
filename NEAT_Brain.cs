@@ -103,9 +103,12 @@ public class NEAT_Brain
 
     }
 
-    public void LoadInput()
+    public void LoadInput(List<float> input)
     {
-
+        for (int i = 0; i < input.Count; i++)
+        {
+            nodes[i].sumInput = input[i];
+        }
     }
 
     public void RunNetwork()
