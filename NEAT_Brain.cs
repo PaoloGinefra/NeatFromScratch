@@ -89,7 +89,7 @@ public class NEAT_Brain
                 {
                     if (Random.Range(0f, 1f) < connectionPercentage)
                     {
-                        connections.Add(new Connection(nodes[i].id, nodes[j + inputSize].id, Random.Range(-1f, 1f), true, false));
+                        connections.Add(new Connection(nodes[i].id, nodes[j + inputSize].id, Random.Range(-5f, 5f), true, false));
                     }
                 }
             }
