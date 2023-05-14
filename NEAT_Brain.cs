@@ -37,16 +37,28 @@ public class NEAT_Brain
         }
 
         // Create Connections
-        for (int i = 0; i < inputSize; i++)
-        {
-            for (int j = 0; j < hiddenSize; j++)
+        if (hiddenSize != 0)
+            for (int i = 0; i < inputSize; i++)
             {
-                if (Random.Range(0f, 1f) < connectionPercentage)
+                for (int j = 0; j < hiddenSize; j++)
                 {
-                    nodes[i].connections.Add(new Connection(connectionID, nodes[i].id, nodes[j + inputSize].id, Random.Range(-1f, 1f), true, false));
+                    if (Random.Range(0f, 1f) < connectionPercentage)
+                    {
+                        connections.Add(new Connection(nodes[i].id, nodes[j + inputSize].id, Random.Range(-1f, 1f), true, false));
+                    }
                 }
             }
-        }
+        else
+            for (int i = 0; i < inputSize; i++)
+            {
+                for (int j = 0; j < outputSize; j++)
+                {
+                    if (Random.Range(0f, 1f) < connectionPercentage)
+                    {
+                        connections.Add(new Connection(nodes[i].id, nodes[j + inputSize].id, Random.Range(-1f, 1f), true, false));
+                    }
+                }
+            }
 
     }
 
