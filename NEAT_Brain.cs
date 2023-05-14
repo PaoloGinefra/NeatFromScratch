@@ -12,6 +12,9 @@ public class NEAT_Brain
     public List<Node> nodes;
     public List<Connection> connections;
 
+    public float fitness;
+    public int SpeciesID;
+
     public NEAT_Brain(int inputSize, int outputSize, int hiddenSize, float connectionPercentage)
     {
         this.inputSize = inputSize;
@@ -108,11 +111,45 @@ public class NEAT_Brain
         for (int i = 0; i < input.Count; i++)
         {
             nodes[i].sumInput = input[i];
+            nodes[i].sumOutput = input[i];
         }
     }
 
     public void RunNetwork()
     {
+        for (int layer = 1; layer < 3; layer++)
+        {
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                if (nodes[i].layer == layer)
+                {
+                    nodes[i].sumInput = 0;
+                    for (int j = 0; j < connections.Count; j++)
+                    {
+                        if (connections[j].toNode == nodes[i].id)
+                        {
+                            nodes[i].sumInput += connections[j].weight * nodes[connections[j].fromNode].sumOutput;
+                        }
+                    }
+                    nodes[i].sumOutput = activationFunction(nodes[i].sumInput);
+                }
+            }
+        }
+    }
 
+    float activationFunction(float x)
+    {
+        return 1 / (1 + Mathf.Exp(-x));
+    }
+
+    List<float> GetOutput()
+    {
+        List<float> output = new List<float>();
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            if (nodes[i].type == 2)
+                output.Add(nodes[i].sumOutput);
+        }
+        return output;
     }
 }
