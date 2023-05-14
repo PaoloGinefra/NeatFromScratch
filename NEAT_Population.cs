@@ -17,6 +17,17 @@ public class NEAT_Population
     public float speciationThreshold = 3f;
     public float thresholdModifier = 0.1f;
 
+    public NEAT_Population(int populationSize, int inputSize, int outputSize, int hiddenSize, float connectionPercentage)
+    {
+        this.populationSize = populationSize;
+        this.inputSize = inputSize;
+        this.outputSize = outputSize;
+        this.hiddenSize = hiddenSize;
+        this.connectionPercentage = connectionPercentage;
+
+        Initialise();
+    }
+
     void Initialise()
     {
         population = new List<NEAT_Brain>();
@@ -26,7 +37,7 @@ public class NEAT_Population
         }
     }
 
-    void Speciate()
+    public void Speciate()
     {
         // Move all previous species to population list
         foreach (Species species in species)
@@ -44,13 +55,13 @@ public class NEAT_Population
             species.Add(new Species(speciesID));
             population.Remove(currentBrain);
 
-            foreach (NEAT_Brain brain in population)
+            for (int i = population.Count - 1; i >= 0; i--)
             {
-                float score = ComparisonCheck(currentBrain, brain);
+                float score = ComparisonCheck(currentBrain, population[i]);
                 if (score < speciationThreshold)
                 {
-                    species[speciesID].AddToSpecies(brain);
-                    population.Remove(brain);
+                    species[speciesID].AddToSpecies(population[i]);
+                    population.Remove(population[i]);
                 }
             }
 
@@ -93,7 +104,7 @@ public class NEAT_Population
         // Excess Genes + Disjoint Genes
         int maxInvvoationID1 = brain1.connections.Max(x => x.innovationID);
         int maxInvvoationID2 = brain2.connections.Max(x => x.innovationID);
-        int[] InnovationIDs = new int[Mathf.Max(maxInvvoationID1, maxInvvoationID2)];
+        int[] InnovationIDs = new int[Mathf.Max(maxInvvoationID1, maxInvvoationID2) + 1];
 
         foreach (Connection connection in brain1.connections)
         {

@@ -112,9 +112,9 @@ public class NEAT_Brain
 
     }
 
-    public void LoadInput(List<float> input)
+    public void LoadInput(float[] input)
     {
-        for (int i = 0; i < input.Count; i++)
+        for (int i = 0; i < input.Length; i++)
         {
             nodes[i].sumInput = input[i];
             nodes[i].sumOutput = input[i];
@@ -148,7 +148,7 @@ public class NEAT_Brain
         return 1 / (1 + Mathf.Exp(-x));
     }
 
-    List<float> GetOutput()
+    public List<float> GetOutput()
     {
         List<float> output = new List<float>();
         for (int i = 0; i < nodes.Count; i++)
