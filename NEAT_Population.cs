@@ -16,6 +16,7 @@ public class NEAT_Population
     public float targetSpeciesNumber = 10;
     public float speciationThreshold = 0.5f;
     public float thresholdModifier = 0.1f;
+    int speciesID = 0;
 
     public NEAT_Population(int populationSize, int inputSize, int outputSize, int hiddenSize, float connectionPercentage)
     {
@@ -39,14 +40,38 @@ public class NEAT_Population
 
     public void Speciate()
     {
-        species.Clear();
+        foreach (Species species in species)
+        {
+            //get random representative
+            species.representative = species.population[Random.Range(0, species.population.Count)];
+            species.population.Clear();
+        }
 
-        // Speciate
-        int speciesID = 0;
+        //Update species
+        foreach (Species species in species)
+        {
+            species.AddToSpecies(species.representative);
+            population.Remove(species.representative);
+
+            for (int i = population.Count - 1; i >= 0; i--)
+            {
+                float score = ComparisonCheck(species.representative, population[i]);
+                if (score < speciationThreshold)
+                {
+                    species.AddToSpecies(population[i]);
+                    population.Remove(population[i]);
+                }
+            }
+
+            species.CalculateAverageFitness();
+            species.CalculateAdjustedFitness();
+        }
+
+        // Speciate remaining population
         while (population.Count > 0)
         {
             NEAT_Brain currentBrain = population[Random.Range(0, population.Count)];
-            species.Add(new Species(speciesID));
+            species.Add(new Species(speciesID, currentBrain));
             species[speciesID].AddToSpecies(currentBrain);
             population.Remove(currentBrain);
 
