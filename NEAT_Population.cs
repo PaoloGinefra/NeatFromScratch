@@ -14,8 +14,9 @@ public class NEAT_Population
     public List<Species> species = new List<Species>();
 
     public float targetSpeciesNumber = 10;
-    public float speciationThreshold = 0.5f;
+    public float speciationThreshold = 3f;
     public float thresholdModifier = 0.1f;
+    public int maxGenerationSinceImprovement = 15;
     int speciesID = 0;
 
     public NEAT_Population(int populationSize, int inputSize, int outputSize, int hiddenSize, float connectionPercentage)
@@ -42,7 +43,7 @@ public class NEAT_Population
     {
         for (int i = species.Count - 1; i >= 0; i--)
         {
-            if (species[i].population.Count == 0)
+            if (species[i].population.Count == 0 || species[i].gensSinceImprovement > maxGenerationSinceImprovement)
             {
                 species.RemoveAt(i);
                 continue;
@@ -126,7 +127,7 @@ public class NEAT_Population
 
         if (brain1.connections.Count == 0 && brain2.connections.Count == 0)
         {
-            return 100;
+            return 0;
         }
 
         // Excess Genes + Disjoint Genes
@@ -134,6 +135,12 @@ public class NEAT_Population
         int maxInvvoationID2 = brain2.connections.Count != 0 ? brain2.connections.Max(x => x.innovationID) : 0;
 
         int[] InnovationIDs = new int[Mathf.Max(maxInvvoationID1, maxInvvoationID2) + 1];
+
+        //initialize all values to 0
+        for (int i = 0; i < InnovationIDs.Length; i++)
+        {
+            InnovationIDs[i] = 0;
+        }
 
         foreach (Connection connection in brain1.connections)
         {
