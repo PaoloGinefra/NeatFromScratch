@@ -12,6 +12,19 @@ public class NEAT_Brain
     public List<Node> nodes;
     public List<Connection> connections;
 
+    public NEAT_Brain(int inputSize, int outputSize, int hiddenSize, float connectionPercentage)
+    {
+        this.inputSize = inputSize;
+        this.outputSize = outputSize;
+        this.hiddenSize = hiddenSize;
+        this.connectionPercentage = connectionPercentage;
+
+        nodes = new List<Node>();
+        connections = new List<Connection>();
+
+        Initialise();
+    }
+
     public void Initialise()
     {
         int nodeID = 0;
@@ -38,6 +51,7 @@ public class NEAT_Brain
 
         // Create Connections
         if (hiddenSize != 0)
+        {
             for (int i = 0; i < inputSize; i++)
             {
                 for (int j = 0; j < hiddenSize; j++)
@@ -48,6 +62,18 @@ public class NEAT_Brain
                     }
                 }
             }
+
+            for (int i = 0; i < hiddenSize; i++)
+            {
+                for (int j = 0; j < outputSize; j++)
+                {
+                    if (Random.Range(0f, 1f) < connectionPercentage)
+                    {
+                        connections.Add(new Connection(nodes[i + inputSize].id, nodes[j + inputSize + hiddenSize].id, Random.Range(-1f, 1f), true, false));
+                    }
+                }
+            }
+        }
         else
             for (int i = 0; i < inputSize; i++)
             {
