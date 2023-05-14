@@ -38,8 +38,9 @@ public class NEAT_Brain
         }
 
         //add bias node
-        nodes.Add(new Node(inputSize, 3, 0));
-        nodes[inputSize].sumInput = 1; //bias node always outputs 1
+        Node BiasNode = new Node(inputSize - 1, 3, 0);
+        BiasNode.sumInput = 1; //bias node always outputs 1
+        nodes.Add(BiasNode);
 
         nodeID += inputSize;
 

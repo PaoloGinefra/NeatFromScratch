@@ -17,7 +17,8 @@ public class NetworkDrawer : MonoBehaviour
 
     [Header("Connections Settings")]
     [SerializeField] float connectionWidth = 0.05f;
-    [SerializeField] Color enabledConnectionColor = Color.black;
+    [SerializeField] Color positiveConnectionColor = Color.red;
+    [SerializeField] Color negativeConnectionColor = Color.blue;
     [SerializeField] Color disabledConnectionColor = Color.gray;
 
 
@@ -27,7 +28,7 @@ public class NetworkDrawer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        brain = new NEAT_Brain(2, 3, 1, 0.5f);
+        brain = new NEAT_Brain(2, 3, 1, 1);
     }
 
     // Update is called once per frame
@@ -129,7 +130,11 @@ public class NetworkDrawer : MonoBehaviour
             if (!drawDisabledConnections && !connection.enabled)
                 continue;
 
-            Line(connectionWidth, nodePositions[connection.fromNode], nodePositions[connection.toNode], connection.enabled ? enabledConnectionColor : disabledConnectionColor);
+            Color color = connection.enabled ? connection.weight > 0 ? positiveConnectionColor : negativeConnectionColor : disabledConnectionColor;
+
+            color = Color.Lerp(color, (positiveConnectionColor + negativeConnectionColor) / 2, Mathf.Atan(Mathf.Abs(connection.weight)) / Mathf.PI * 2);
+
+            Line(connectionWidth, nodePositions[connection.fromNode], nodePositions[connection.toNode], color);
         }
     }
 
