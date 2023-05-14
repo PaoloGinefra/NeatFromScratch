@@ -23,6 +23,17 @@ public class Connection
         this.isRecurrent = isRecurrent;
     }
 
+    //copy constructor
+    public Connection(Connection connection)
+    {
+        this.innovationID = connection.innovationID;
+        this.fromNode = connection.fromNode;
+        this.toNode = connection.toNode;
+        this.weight = connection.weight;
+        this.enabled = connection.enabled;
+        this.isRecurrent = connection.isRecurrent;
+    }
+
     int CantorMap(int x, int y)
     {
         return (x + y) * (x + y + 1) / 2 + y;

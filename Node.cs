@@ -16,4 +16,12 @@ public class Node
         this.type = type;
         this.layer = layer;
     }
+
+    //copy constructor
+    public Node(Node node)
+    {
+        this.id = node.id;
+        this.type = node.type;
+        this.layer = node.layer;
+    }
 }

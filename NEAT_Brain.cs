@@ -28,6 +28,28 @@ public class NEAT_Brain
         Initialise();
     }
 
+    //Copy Constructor
+    public NEAT_Brain(NEAT_Brain brain)
+    {
+        inputSize = brain.inputSize;
+        outputSize = brain.outputSize;
+        hiddenSize = brain.hiddenSize;
+        connectionPercentage = brain.connectionPercentage;
+
+        nodes = new List<Node>();
+        connections = new List<Connection>();
+
+        foreach (Node node in brain.nodes)
+        {
+            nodes.Add(new Node(node));
+        }
+
+        foreach (Connection connection in brain.connections)
+        {
+            connections.Add(new Connection(connection));
+        }
+    }
+
     public void Initialise()
     {
         int nodeID = 0;

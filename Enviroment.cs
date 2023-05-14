@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Enviroment : MonoBehaviour
@@ -19,31 +20,33 @@ public class Enviroment : MonoBehaviour
         RunGeneration();
 
         Debug.Log(population.species.Count);
+        Debug.Log(population.population.Count);
     }
 
     int index = 0;
     void Update()
     {
-        networkDrawer.brain = population.population[index];
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        RunGeneration();
+        Debug.Log("Pop size: " + population.population.Count);
+        Debug.Log("Species size: " + population.species.Count);
+        Debug.Log("threshold: " + population.speciationThreshold);
+
+        NEAT_Brain best = population.population.OrderByDescending(x => x.fitness).First();
+
+        networkDrawer.brain = best;
+
+        Debug.Log("TESTING, index = " + index);
+
+        for (int i = 0; i < XORInputs.Length; i++)
         {
-            index++;
-            if (index >= population.population.Count)
-            {
-                index = 0;
-            }
-
-            for (int i = 0; i < XORInputs.Length; i++)
-            {
-                population.population[index].LoadInput(XORInputs[i]);
-                population.population[index].RunNetwork();
-                float output = population.population[index].GetOutput()[0];
-                Debug.Log(XORInputs[i]);
-                Debug.Log(output);
-            }
-
+            best.LoadInput(XORInputs[i]);
+            best.RunNetwork();
+            float output = best.GetOutput()[0];
+            Debug.Log(XORInputs[i][0] + " XOR " + XORInputs[i][1] + " = " + output + " | " + XOROutputs[i]);
         }
+
+
     }
 
     public void RunGeneration()
@@ -53,6 +56,7 @@ public class Enviroment : MonoBehaviour
             EvaluateFitness(brain);
         }
         population.Speciate();
+        population.CrossBreed();
     }
 
     public void EvaluateFitness(NEAT_Brain brain)
@@ -65,6 +69,6 @@ public class Enviroment : MonoBehaviour
             float output = brain.GetOutput()[0];
             fitness += 1 - Mathf.Abs(output - XOROutputs[i]);
         }
-        brain.fitness = Random.Range(0, 100);
+        brain.fitness = fitness;
     }
 }
