@@ -13,11 +13,14 @@ public class NEAT_Population
 
     public List<Species> species = new List<Species>();
 
-    public float targetSpeciesNumber = 10;
-    public float speciationThreshold = 3f;
-    public float thresholdModifier = 0.1f;
+    public float targetSpeciesNumber = 5;
+    public float speciationThreshold = 100f;
+    public float thresholdModifier = 0.5f;
     public int maxGenerationSinceImprovement = 15;
+    public bool elitism = true;
+    public float mutationRate = 0.5f;
     int speciesID = 0;
+    NEAT_Brain bestBrain;
 
     public NEAT_Population(int populationSize, int inputSize, int outputSize, int hiddenSize, float connectionPercentage)
     {
@@ -41,6 +44,16 @@ public class NEAT_Population
 
     public void Speciate()
     {
+        bestBrain = population[0];
+        foreach (NEAT_Brain brain in population)
+        {
+            if (brain.fitness > bestBrain.fitness)
+            {
+                bestBrain = brain;
+            }
+        }
+
+        // Clear species
         for (int i = species.Count - 1; i >= 0; i--)
         {
             if (species[i].population.Count == 0 || species[i].gensSinceImprovement > maxGenerationSinceImprovement)
@@ -56,16 +69,13 @@ public class NEAT_Population
         //Update species
         foreach (Species species in species)
         {
-            species.AddToSpecies(species.representative);
-            population.Remove(species.representative);
-
             for (int i = population.Count - 1; i >= 0; i--)
             {
                 float score = ComparisonCheck(species.representative, population[i]);
                 if (score < speciationThreshold)
                 {
                     species.AddToSpecies(population[i]);
-                    population.Remove(population[i]);
+                    population.RemoveAt(i);
                 }
             }
 
@@ -118,6 +128,12 @@ public class NEAT_Population
         foreach (Species species in species)
         {
             species.N_offpsring = Mathf.FloorToInt(species.adjustedFitness / averageAdjustedFitness * populationSize);
+        }
+
+        // Elitism
+        if (elitism)
+        {
+            population.Add(bestBrain);
         }
     }
 
@@ -187,7 +203,7 @@ public class NEAT_Population
             totalFitness += brain.fitness;
         }
 
-        float random = Random.Range(0, totalFitness);
+        float random = Random.Range(0, totalFitness - 0.001f);
         float runningSum = 0;
 
         foreach (NEAT_Brain brain in species.population)
@@ -230,7 +246,7 @@ public class NEAT_Population
                     }
                 }
             }
-            population.Add(child);
+            //population.Add(child);
             newSpeciesPopulation.Add(child);
         }
 
@@ -244,6 +260,20 @@ public class NEAT_Population
         foreach (Species species in species)
         {
             CrossBreedSpecies(species);
+        }
+    }
+
+    public void Mutate()
+    {
+        // Mutate species
+        foreach (Species species in species)
+        {
+            foreach (NEAT_Brain brain in species.population)
+            {
+                if (Random.Range(0f, 1f) < mutationRate)
+                    brain.Mutate();
+                population.Add(brain);
+            }
         }
 
         // Fill up population with random species

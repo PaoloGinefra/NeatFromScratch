@@ -16,27 +16,30 @@ public class Enviroment : MonoBehaviour
     {
         networkDrawer = FindObjectOfType<NetworkDrawer>();
 
-        population = new NEAT_Population(100, 3, 1, 1, 0.5f);
-        RunGeneration();
+        population = new NEAT_Population(50, 3, 1, 1, 0.8f);
+        foreach (NEAT_Brain brain in population.population)
+        {
+            EvaluateFitness(brain);
+        }
 
         Debug.Log(population.species.Count);
         Debug.Log(population.population.Count);
     }
 
-    int index = 0;
     void Update()
     {
-
         RunGeneration();
         Debug.Log("Pop size: " + population.population.Count);
         Debug.Log("Species size: " + population.species.Count);
         Debug.Log("threshold: " + population.speciationThreshold);
+        logBest();
+    }
 
+    void logBest()
+    {
         NEAT_Brain best = population.population.OrderByDescending(x => x.fitness).First();
 
         networkDrawer.brain = best;
-
-        Debug.Log("TESTING, index = " + index);
 
         for (int i = 0; i < XORInputs.Length; i++)
         {
@@ -46,17 +49,18 @@ public class Enviroment : MonoBehaviour
             Debug.Log(XORInputs[i][0] + " XOR " + XORInputs[i][1] + " = " + output + " | " + XOROutputs[i]);
         }
 
-
+        Debug.Log("Fitness: " + best.fitness);
     }
 
     public void RunGeneration()
     {
+        population.Speciate();
+        population.CrossBreed();
+        population.Mutate();
         foreach (NEAT_Brain brain in population.population)
         {
             EvaluateFitness(brain);
         }
-        population.Speciate();
-        population.CrossBreed();
     }
 
     public void EvaluateFitness(NEAT_Brain brain)

@@ -147,7 +147,7 @@ public class NEAT_Brain
                 }
                 else
                 {
-                    connections[i].weight += connections[i].weight * Random.Range(-connectionWeightMutationRange, connectionWeightMutationRange);
+                    connections[i].weight *= 1 + Random.Range(-connectionWeightMutationRange, connectionWeightMutationRange);
                 }
             }
         }
