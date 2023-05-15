@@ -14,6 +14,8 @@ public class NEAT_Brain
     public float connectionRandomConnectionMutationRate = 0.1f;
     public float connectionWeightMutationRange = 0.2f;
 
+    public float addConnectionMutationRate = 0.5f;
+
     public List<Node> nodes;
     public List<Connection> connections;
 
@@ -131,6 +133,38 @@ public class NEAT_Brain
 
     public void AddConnection()
     {
+        //Choose 2 random nodes
+        int node1 = Random.Range(0, nodes.Count);
+        int node2 = Random.Range(0, nodes.Count);
+
+        while (nodes[node1].layer == nodes[node2].layer)
+        {
+            node2 = Random.Range(0, nodes.Count);
+        }
+
+        //if node1 is after node2, swap them
+        if (nodes[node1].layer > nodes[node2].layer)
+        {
+            int temp = node1;
+            node1 = node2;
+            node2 = temp;
+        }
+
+        // Check if connection already exists
+        bool connectionExists = false;
+        for (int i = 0; i < connections.Count; i++)
+        {
+            if (connections[i].fromNode == nodes[node1].id && connections[i].toNode == nodes[node2].id)
+            {
+                connectionExists = true;
+                break;
+            }
+        }
+
+        if (!connectionExists)
+        {
+            connections.Add(new Connection(nodes[node1].id, nodes[node2].id, Random.Range(-weightRange, weightRange), true, false));
+        }
 
     }
 
@@ -150,6 +184,12 @@ public class NEAT_Brain
                     connections[i].weight *= 1 + Random.Range(-connectionWeightMutationRange, connectionWeightMutationRange);
                 }
             }
+        }
+
+        //add connection
+        if (Random.Range(0f, 1f) < addConnectionMutationRate)
+        {
+            AddConnection();
         }
     }
 
