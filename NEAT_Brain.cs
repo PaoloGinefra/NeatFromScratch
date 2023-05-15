@@ -8,6 +8,11 @@ public class NEAT_Brain
     public int outputSize;
     public int hiddenSize;
     public float connectionPercentage;
+    public float weightRange = 5f;
+
+    public float connectionMutationRate = 0.8f;
+    public float connectionRandomConnectionMutationRate = 0.1f;
+    public float connectionWeightMutationRange = 0.2f;
 
     public List<Node> nodes;
     public List<Connection> connections;
@@ -89,7 +94,7 @@ public class NEAT_Brain
                 {
                     if (Random.Range(0f, 1f) < connectionPercentage)
                     {
-                        connections.Add(new Connection(nodes[i].id, nodes[j + inputSize].id, Random.Range(-5f, 5f), true, false));
+                        connections.Add(new Connection(nodes[i].id, nodes[j + inputSize].id, Random.Range(-weightRange, weightRange), true, false));
                     }
                 }
             }
@@ -100,7 +105,7 @@ public class NEAT_Brain
                 {
                     if (Random.Range(0f, 1f) < connectionPercentage)
                     {
-                        connections.Add(new Connection(nodes[i + inputSize].id, nodes[j + inputSize + hiddenSize].id, Random.Range(-1f, 1f), true, false));
+                        connections.Add(new Connection(nodes[i + inputSize].id, nodes[j + inputSize + hiddenSize].id, Random.Range(-weightRange, weightRange), true, false));
                     }
                 }
             }
@@ -131,7 +136,21 @@ public class NEAT_Brain
 
     public void Mutate()
     {
-
+        //Mutate Connections
+        for (int i = 0; i < connections.Count; i++)
+        {
+            if (Random.Range(0f, 1f) < connectionMutationRate)
+            {
+                if (Random.Range(0f, 1f) < connectionRandomConnectionMutationRate)
+                {
+                    connections[i].weight = Random.Range(-weightRange, weightRange);
+                }
+                else
+                {
+                    connections[i].weight += connections[i].weight * Random.Range(-connectionWeightMutationRange, connectionWeightMutationRange);
+                }
+            }
+        }
     }
 
     public void LoadInput(float[] input)
