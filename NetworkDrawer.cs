@@ -29,6 +29,10 @@ public class NetworkDrawer : MonoBehaviour
     void Start()
     {
         brain = new NEAT_Brain(2, 3, 1, 1);
+
+        //complement positive connection color
+        negativeConnectionColor = new Color(1 - positiveConnectionColor.r, 1 - positiveConnectionColor.g, 1 - positiveConnectionColor.b);
+        disabledConnectionColor = positiveConnectionColor * 0.5f + negativeConnectionColor * 0.5f;
     }
 
     // Update is called once per frame
@@ -132,7 +136,7 @@ public class NetworkDrawer : MonoBehaviour
 
             Color color = connection.enabled ? connection.weight > 0 ? positiveConnectionColor : negativeConnectionColor : disabledConnectionColor;
 
-            color = Color.Lerp(color, (positiveConnectionColor + negativeConnectionColor) / 2, Mathf.Atan(Mathf.Abs(connection.weight)) / Mathf.PI * 2);
+            color = Color.Lerp(color, disabledConnectionColor, Mathf.Atan(Mathf.Abs(connection.weight) / brain.weightRange) / Mathf.PI * 2);
 
             Line(connectionWidth, nodePositions[connection.fromNode], nodePositions[connection.toNode], color);
         }
