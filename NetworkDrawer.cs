@@ -85,11 +85,19 @@ public class NetworkDrawer : MonoBehaviour
 
     void ComputeNodesPositions()
     {
+        //Compute layers x positions
+        float[] layersX = new float[brain.n_layers];
+        for (int i = 0; i < brain.n_layers; i++)
+        {
+            layersX[i] = (float)(i) / (brain.n_layers - 1) - 0.5f;
+            layersX[i] *= width / height;
+        }
+
         nodePositions.Clear();
         for (int i = 0; i < brain.nodes.Count; i++)
         {
             Node node = brain.nodes[i];
-            float x = (node.layer - 1) * width / height / 2;
+            float x = layersX[node.layer];
             float y = 0;
             if (i < brain.inputSize)
             {

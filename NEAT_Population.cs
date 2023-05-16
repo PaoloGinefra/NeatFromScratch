@@ -18,7 +18,7 @@ public class NEAT_Population
     public float thresholdModifier = 0.5f;
     public int maxGenerationSinceImprovement = 15;
     public bool elitism = true;
-    public float mutationRate = 0.5f;
+    public float mutationRate = 0.8f;
     int speciesID = 0;
     NEAT_Brain bestBrain;
 

@@ -8,20 +8,24 @@ public class NEAT_Brain
     public int outputSize;
     public int hiddenSize;
     public float connectionPercentage;
-    public float weightRange = 5f;
+    public float weightRange = 20f;
 
     public float connectionMutationRate = 0.8f;
     public float connectionRandomConnectionMutationRate = 0.1f;
     public float connectionWeightMutationRange = 0.2f;
     public float connectionReanableRate = 0.25f;
 
-    public float addConnectionMutationRate = 0.5f;
+    public float addNodeMutationRate = 0.1f;
+
+    public float addConnectionMutationRate = 0.2f;
 
     public List<Node> nodes;
     public List<Connection> connections;
 
     public float fitness;
     public int SpeciesID;
+
+    public int n_layers = 3;
 
     public NEAT_Brain(int inputSize, int outputSize, int hiddenSize, float connectionPercentage)
     {
@@ -129,8 +133,69 @@ public class NEAT_Brain
 
     public void AddNode()
     {
+        if (connections.Count == 0)
+        {
+            return;
+        }
 
+        //Choose a random connection and disable it
+        int connectionIndex = Random.Range(0, connections.Count);
+        connections[connectionIndex].enabled = false;
+
+        //Create new node
+        Node newNode = new Node(nodes.Count, 1, nodes[connections[connectionIndex].fromNode].layer + 1);
+
+        //Create 2 new connections
+        connections.Add(new Connection(connections[connectionIndex].fromNode, newNode.id, 1, true, false));
+        connections.Add(new Connection(newNode.id, connections[connectionIndex].toNode, connections[connectionIndex].weight, true, false));
+
+        //Add new node to list
+        nodes.Add(newNode);
+
+        //Adjust layers
+        AdjustLayers(newNode.id, newNode.layer);
+
+        //Adjust output layer
+        AdjustOuputLayer();
     }
+
+    void AdjustLayers(int nodeID, int layer)
+    {
+        foreach (Connection connection in connections)
+        {
+            if (connection.fromNode == nodeID)
+            {
+                if (nodes[connection.toNode].layer <= layer)
+                {
+                    nodes[connection.toNode].layer = layer + 1;
+                    AdjustLayers(connection.toNode, layer + 1);
+                }
+            }
+        }
+    }
+
+    void AdjustOuputLayer()
+    {
+        int maxLayer = 0;
+        foreach (Node node in nodes)
+        {
+            if (node.layer > maxLayer)
+            {
+                maxLayer = node.layer;
+            }
+        }
+
+        foreach (Node node in nodes)
+        {
+            if (node.type == 2)
+            {
+                node.layer = maxLayer;
+            }
+        }
+
+        n_layers = maxLayer + 1;
+    }
+
 
     public void AddConnection()
     {
@@ -192,10 +257,16 @@ public class NEAT_Brain
             }
         }
 
-        //add connection
+        //Add connection
         if (Random.Range(0f, 1f) < addConnectionMutationRate)
         {
             AddConnection();
+        }
+
+        //Add node
+        if (Random.Range(0f, 1f) < addNodeMutationRate)
+        {
+            AddNode();
         }
     }
 
@@ -210,7 +281,7 @@ public class NEAT_Brain
 
     public void RunNetwork()
     {
-        for (int layer = 1; layer < 3; layer++)
+        for (int layer = 1; layer < n_layers; layer++)
         {
             for (int i = 0; i < nodes.Count; i++)
             {
