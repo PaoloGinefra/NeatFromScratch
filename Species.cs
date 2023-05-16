@@ -23,17 +23,6 @@ public class Species
     {
         population.Add(brain);
     }
-
-    public void CalculateAdjustedFitness()
-    {
-        adjustedFitness = 0;
-        foreach (NEAT_Brain brain in population)
-        {
-            adjustedFitness += brain.fitness;
-        }
-        adjustedFitness /= population.Count;
-    }
-
     public void CalculateAverageFitness()
     {
         float pastAvaregeFitness = averageFitness;
@@ -43,6 +32,8 @@ public class Species
             averageFitness += brain.fitness;
         }
         averageFitness /= population.Count;
+
+        adjustedFitness = averageFitness / population.Count;
 
         if (averageFitness > pastAvaregeFitness)
             gensSinceImprovement = 0;

@@ -80,7 +80,6 @@ public class NEAT_Population
             }
 
             species.CalculateAverageFitness();
-            species.CalculateAdjustedFitness();
         }
 
         // Speciate remaining population
@@ -102,7 +101,6 @@ public class NEAT_Population
             }
 
             species[species.Count - 1].CalculateAverageFitness();
-            species[species.Count - 1].CalculateAdjustedFitness();
 
             speciesID++;
         }
