@@ -16,11 +16,9 @@ public class Enviroment : MonoBehaviour
     {
         networkDrawer = FindObjectOfType<NetworkDrawer>();
 
-        population = new NEAT_Population(50, 3, 1, 2, 0.1f);
-        foreach (NEAT_Brain brain in population.population)
-        {
-            EvaluateFitness(brain);
-        }
+        population = new NEAT_Population(50, 3, 1, 1, 0.1f);
+
+        EvaluateFitness();
 
         Debug.Log(population.species.Count);
         Debug.Log(population.population.Count);
@@ -70,22 +68,22 @@ public class Enviroment : MonoBehaviour
         population.Speciate();
         population.CrossBreed();
         population.Mutate();
-        foreach (NEAT_Brain brain in population.population)
-        {
-            EvaluateFitness(brain);
-        }
+        EvaluateFitness();
     }
 
-    public void EvaluateFitness(NEAT_Brain brain)
+    public void EvaluateFitness()
     {
-        float fitness = 0;
-        for (int i = 0; i < XORInputs.Length; i++)
+        foreach (NEAT_Brain brain in population.population)
         {
-            brain.LoadInput(XORInputs[i]);
-            brain.RunNetwork();
-            float output = brain.GetOutput()[0];
-            fitness += 1 - Mathf.Abs(output - XOROutputs[i]);
+            float fitness = 0;
+            for (int i = 0; i < XORInputs.Length; i++)
+            {
+                brain.LoadInput(XORInputs[i]);
+                brain.RunNetwork();
+                float output = brain.GetOutput()[0];
+                fitness += 1 - Mathf.Abs(output - XOROutputs[i]);
+            }
+            brain.fitness = fitness;
         }
-        brain.fitness = fitness;
     }
 }
