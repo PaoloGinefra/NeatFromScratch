@@ -13,6 +13,7 @@ public class NEAT_Brain
     public float connectionMutationRate = 0.8f;
     public float connectionRandomConnectionMutationRate = 0.1f;
     public float connectionWeightMutationRange = 0.2f;
+    public float connectionReanableRate = 0.25f;
 
     public float addConnectionMutationRate = 0.5f;
 
@@ -152,9 +153,10 @@ public class NEAT_Brain
 
         // Check if connection already exists
         bool connectionExists = false;
-        for (int i = 0; i < connections.Count; i++)
+        int connectionIndex = 0;
+        for (connectionIndex = 0; connectionIndex < connections.Count; connectionIndex++)
         {
-            if (connections[i].fromNode == nodes[node1].id && connections[i].toNode == nodes[node2].id)
+            if (connections[connectionIndex].fromNode == nodes[node1].id && connections[connectionIndex].toNode == nodes[node2].id)
             {
                 connectionExists = true;
                 break;
@@ -164,6 +166,10 @@ public class NEAT_Brain
         if (!connectionExists)
         {
             connections.Add(new Connection(nodes[node1].id, nodes[node2].id, Random.Range(-weightRange, weightRange), true, false));
+        }
+        else if (!connections[connectionIndex].enabled && Random.Range(0f, 1f) < connectionReanableRate)
+        {
+            connections[connectionIndex].enabled = true;
         }
 
     }
