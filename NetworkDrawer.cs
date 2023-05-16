@@ -14,6 +14,7 @@ public class NetworkDrawer : MonoBehaviour
     [SerializeField] float nodeRadius = 0.1f;
     [SerializeField] int nodeSteps = 10;
     [SerializeField] Color nodeColor = Color.black;
+    [SerializeField] Color biasNodeColor = Color.black;
 
     [Header("Connections Settings")]
     [SerializeField] float connectionWidth = 0.05f;
@@ -129,7 +130,7 @@ public class NetworkDrawer : MonoBehaviour
     {
         for (int i = 0; i < brain.nodes.Count; i++)
         {
-            Circle(nodePositions[i], nodeRadius, nodeSteps, nodeColor);
+            Circle(nodePositions[i], nodeRadius, nodeSteps, brain.nodes[i].type == 3 ? biasNodeColor : nodeColor);
         }
     }
 
