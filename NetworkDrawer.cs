@@ -95,34 +95,27 @@ public class NetworkDrawer : MonoBehaviour
         }
 
         nodePositions.Clear();
+        int[] nodePerLayer = new int[brain.n_layers];
+        for (int i = 0; i < brain.n_layers; i++)
+            nodePerLayer[i] = 0;
+
+        foreach (Node node in brain.nodes)
+        {
+            nodePerLayer[node.layer]++;
+        }
+
+        int[] nodePerLayerFound = new int[brain.n_layers];
+        for (int i = 0; i < brain.n_layers; i++)
+            nodePerLayerFound[i] = 0;
+
         for (int i = 0; i < brain.nodes.Count; i++)
         {
             Node node = brain.nodes[i];
             float x = layersX[node.layer];
-            float y = 0;
-            if (i < brain.inputSize)
-            {
-                if (brain.inputSize != 1)
-                    y = (float)(i) / (brain.inputSize - 1) - 0.5f;
-                else
-                    y = 0;
-            }
-            else if (i < brain.inputSize + brain.hiddenSize)
-            {
-                if (brain.hiddenSize != 1)
-                    y = (float)(i - brain.inputSize) / (brain.hiddenSize - 1) - 0.5f;
-                else
-                    y = 0;
-            }
-            else
-            {
-                if (brain.outputSize != 1)
-                    y = (float)(i - brain.inputSize - brain.hiddenSize) / (brain.outputSize - 1) - 0.5f;
-                else
-                    y = 0;
-            }
+            float y = nodePerLayer[node.layer] > 1 ? (float)(nodePerLayerFound[node.layer]) / (nodePerLayer[node.layer] - 1) - 0.5f : 0;
             Vector2 pos = new Vector2(x, y);
             nodePositions.Add(pos);
+            nodePerLayerFound[node.layer]++;
         }
     }
 
