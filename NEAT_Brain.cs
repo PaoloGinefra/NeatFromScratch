@@ -177,11 +177,13 @@ public class NEAT_Brain
     void AdjustOuputLayer()
     {
         int maxLayer = 0;
+        bool isOutput = false;
         foreach (Node node in nodes)
         {
             if (node.layer > maxLayer)
             {
                 maxLayer = node.layer;
+                isOutput = node.type == 2;
             }
         }
 
@@ -189,7 +191,7 @@ public class NEAT_Brain
         {
             if (node.type == 2)
             {
-                node.layer = maxLayer;
+                node.layer = maxLayer + (isOutput ? 0 : 1);
             }
         }
 

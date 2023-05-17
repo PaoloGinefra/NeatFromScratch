@@ -16,7 +16,7 @@ public class Enviroment : MonoBehaviour
     {
         networkDrawer = FindObjectOfType<NetworkDrawer>();
 
-        population = new NEAT_Population(50, 3, 1, 1, 1f);
+        population = new NEAT_Population(50, 3, 1, 2, 0f);
 
         EvaluateFitness();
 
