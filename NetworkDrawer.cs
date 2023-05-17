@@ -8,7 +8,6 @@ public class NetworkDrawer : MonoBehaviour
 
     [Header("General Settings")]
     [SerializeField] Vector2 padding = Vector2.zero;
-    [SerializeField] bool drawDisabledConnections = true;
 
     [Header("Nodes Settings")]
     [SerializeField] float nodeRadius = 0.1f;
@@ -21,7 +20,7 @@ public class NetworkDrawer : MonoBehaviour
     [SerializeField] Color positiveConnectionColor = Color.red;
     [SerializeField] Color negativeConnectionColor = Color.blue;
     [SerializeField] Color disabledConnectionColor = Color.gray;
-
+    [SerializeField] bool drawDisabledConnections = true;
 
     float width, height;
     List<Vector2> nodePositions = new List<Vector2>();
