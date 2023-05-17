@@ -33,6 +33,7 @@ public class Enviroment : MonoBehaviour
         Debug.Log("Species size: " + population.species.Count);
         Debug.Log("threshold: " + population.speciationThreshold);
         logBest();
+        logSpecies();
         generation++;
     }
 
@@ -61,6 +62,14 @@ public class Enviroment : MonoBehaviour
         }
         avgFitness /= population.population.Count;
         Debug.Log("Avg Fitness: " + avgFitness);
+    }
+
+    void logSpecies()
+    {
+        foreach (Species s in population.species)
+        {
+            Debug.Log("Species: " + s.SpeciesID + " | " + s.population.Count + " | " + s.N_offpsring + " | " + s.averageFitness + " | " + s.gensSinceImprovement);
+        }
     }
 
     public void RunGeneration()
