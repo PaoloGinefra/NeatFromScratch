@@ -15,7 +15,7 @@ public class NEAT_Population
 
     public float targetSpeciesNumber = 5;
     public float speciationThreshold = 100f;
-    public float thresholdModifier = 0.5f;
+    public float thresholdModifier = 0.1f;
     public int maxGenerationSinceImprovement = 100;
     public bool elitism = true;
     public float mutationRate = 0.2f;
@@ -274,11 +274,11 @@ public class NEAT_Population
         // Mutate species
         foreach (Species species in species)
         {
-            foreach (NEAT_Brain brain in species.population)
+            for (int i = 0; i < species.population.Count; i++)
             {
                 if (Random.Range(0f, 1f) < mutationRate)
-                    brain.Mutate();
-                population.Add(brain);
+                    species.population[i].Mutate();
+                population.Add(species.population[i]);
             }
         }
 

@@ -16,7 +16,7 @@ public class Enviroment : MonoBehaviour
     {
         networkDrawer = FindObjectOfType<NetworkDrawer>();
 
-        population = new NEAT_Population(50, 3, 1, 1, 1f);
+        population = new NEAT_Population(50, 3, 1, 1, 0.5f);
 
         EvaluateFitness();
 
@@ -33,7 +33,7 @@ public class Enviroment : MonoBehaviour
         Debug.Log("Species size: " + population.species.Count);
         Debug.Log("threshold: " + population.speciationThreshold);
         logBest();
-        logSpecies();
+        //logSpecies();
         generation++;
     }
 

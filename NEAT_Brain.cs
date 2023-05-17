@@ -15,7 +15,7 @@ public class NEAT_Brain
     public float connectionWeightMutationRange = 0.2f;
     public float connectionReanableRate = 0.25f;
 
-    public float addNodeMutationRate = 0.1f;
+    public float addNodeMutationRate = 0.01f;
 
     public float addConnectionMutationRate = 0.2f;
 
@@ -307,7 +307,22 @@ public class NEAT_Brain
 
     float activationFunction(float x)
     {
+        return Sigmoid(x);
+    }
+
+    float Sigmoid(float x)
+    {
         return 1 / (1 + Mathf.Exp(-x));
+    }
+
+    float tanh(float x)
+    {
+        return (Mathf.Exp(x) - Mathf.Exp(-x)) / (Mathf.Exp(x) + Mathf.Exp(-x));
+    }
+
+    float relu(float x)
+    {
+        return Mathf.Max(0, x);
     }
 
     public List<float> GetOutput()
