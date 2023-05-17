@@ -142,10 +142,4 @@ public class NetworkDrawer : MonoBehaviour
             Line(connectionWidth, nodePositions[connection.fromNode], nodePositions[connection.toNode], color);
         }
     }
-
-    private void OnDrawGizmos()
-    {
-        if (Application.isPlaying)
-            DrawNetwork();
-    }
 }

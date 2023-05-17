@@ -68,7 +68,7 @@ public class Enviroment : MonoBehaviour
     {
         foreach (Species s in population.species)
         {
-            Debug.Log("Species: " + s.SpeciesID + " | " + s.population.Count + " | " + s.N_offpsring + " | " + s.averageFitness + " | " + s.gensSinceImprovement);
+            Debug.Log("Species: " + s.SpeciesID + " | " + s.population.Count + " | " + s.N_offpsring + " | " + s.averageFitness + " | " + s.age);
         }
     }
 

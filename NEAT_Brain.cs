@@ -60,6 +60,8 @@ public class NEAT_Brain
         {
             connections.Add(new Connection(connection));
         }
+
+        n_layers = brain.n_layers;
     }
 
     public void Initialise()
@@ -195,7 +197,7 @@ public class NEAT_Brain
             }
         }
 
-        n_layers = maxLayer + 1;
+        n_layers = maxLayer + 1 + (isOutput ? 0 : 1);
     }
 
 

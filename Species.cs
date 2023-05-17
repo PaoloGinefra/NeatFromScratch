@@ -11,6 +11,7 @@ public class Species
     public float adjustedFitness;
     public int N_offpsring;
     public int gensSinceImprovement;
+    public int age = 0;
 
     public Species(int SpeciesID, NEAT_Brain representative)
     {
@@ -25,6 +26,12 @@ public class Species
     }
     public void CalculateAverageFitness()
     {
+        if (population.Count == 0)
+        {
+            averageFitness = 0;
+            return;
+        }
+
         float pastAvaregeFitness = averageFitness;
         averageFitness = 0;
         foreach (NEAT_Brain brain in population)

@@ -16,9 +16,9 @@ public class NEAT_Population
     public float targetSpeciesNumber = 5;
     public float speciationThreshold = 100f;
     public float thresholdModifier = 0.5f;
-    public int maxGenerationSinceImprovement = 15;
+    public int maxGenerationSinceImprovement = 100;
     public bool elitism = true;
-    public float mutationRate = 0.8f;
+    public float mutationRate = 0.2f;
     int speciesID = 0;
     NEAT_Brain bestBrain;
 
@@ -56,14 +56,17 @@ public class NEAT_Population
         // Clear species
         for (int i = species.Count - 1; i >= 0; i--)
         {
-            if (species[i].population.Count == 0 || species[i].gensSinceImprovement > maxGenerationSinceImprovement)
+            if (species[i].gensSinceImprovement > maxGenerationSinceImprovement)
             {
                 species.RemoveAt(i);
                 continue;
             }
-            //get random representative
-            species[i].representative = species[i].population[Random.Range(0, species[i].population.Count)];
+            //rappresentative as the fittest brain of the species
+            species[i].population.Sort((x, y) => y.fitness.CompareTo(x.fitness));
+            species[i].representative = species[i].population[0];
             species[i].population.Clear();
+            species[i].population.Add(species[i].representative);
+            population.Remove(species[i].representative);
         }
 
         //Update species
@@ -80,6 +83,7 @@ public class NEAT_Population
             }
 
             species.CalculateAverageFitness();
+            species.age++;
         }
 
         // Speciate remaining population
@@ -123,9 +127,13 @@ public class NEAT_Population
         }
 
         // Calculate N_offspring
-        foreach (Species species in species)
+        for (int i = species.Count - 1; i >= 0; i--)
         {
-            species.N_offpsring = Mathf.FloorToInt(species.adjustedFitness / averageAdjustedFitness * populationSize);
+            species[i].N_offpsring = Mathf.FloorToInt(species[i].adjustedFitness / averageAdjustedFitness * populationSize);
+            if (species[i].N_offpsring == 0)
+            {
+                species.RemoveAt(i);
+            }
         }
 
         // Elitism
@@ -244,7 +252,7 @@ public class NEAT_Population
                     }
                 }
             }
-            //population.Add(child);
+            population.Add(child);
             newSpeciesPopulation.Add(child);
         }
 
